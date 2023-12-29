@@ -28,6 +28,7 @@
 	"chrome.breakOnLoadStrategy.description": "breakOnLoad (载入时中断) 功能使用的策略。",
 	"chrome.breakOnLoadStrategy.instrument.description": "让 Chrome 在每个脚本载入后暂停，并先解析源映射和设置断点",
 	"chrome.breakOnLoadStrategy.regex.description": "在已设置断点文件的同名文件中乐观设置断点。",
+	"egret.project.MyDebugWithoutBuild": "直接调试，不编译",
 	"egret.project.compile": "编译项目",
 	"egret.project.clean": "清理项目",
 	"egret.project.run": "运行项目",

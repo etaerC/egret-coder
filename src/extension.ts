@@ -139,6 +139,7 @@ function installEventListeners(context: vscode.ExtensionContext) {
 
 function installCommands(context: vscode.ExtensionContext) {
     const handlerMap = {
+        [EgretExtensionCommand.MyDebugWithoutBuild]: () => project.MyDebugWithoutBuild(),
         [EgretExtensionCommand.Build]: () => project.build(),
         [EgretExtensionCommand.Run]: () => project.run(),
         [EgretExtensionCommand.Clean]: () => project.clean(),
@@ -216,6 +217,12 @@ function installButtons(context: vscode.ExtensionContext) {
             tooltip: 'Egret server',
             text: `$(server)`,
         },
+        {
+            priority: 4,
+            command: EgretExtensionCommand.MyDebugWithoutBuild,
+            tooltip: '%egret.project.MyDebugWithoutBuild%',
+            text: `$(run)`,
+        },
     ].map(btn => createStatusBarButton(btn));
 }
 
@@ -227,7 +234,7 @@ function createStatusBarButton(btnSetting: StatusBarButtonSetting) {
     button.show();
 }
 
-function addUri(_uri: string, add1: string, add2: string): string {
+export function addUri(_uri: string, add1: string, add2: string): string {
     let uri = ""
     if (_uri.indexOf("/") == -1) {
         uri = _uri + add1;
@@ -252,7 +259,6 @@ function disposeFiles(): void {
             for (let item of json.configurations) {
                 if (item.name == "Egret WebpackDevServer Debugger") {
                     isFound = true;
-                    break;
                 }
             }
             if (!isFound) {

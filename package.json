@@ -308,6 +308,11 @@
     ],
     "commands": [
       {
+        "command": "extension.MyDebugWithoutBuild",
+        "category": "Egret",
+        "title": "%egret.project.MyDebugWithoutBuild%"
+      },
+      {
         "command": "extension.egretBuild",
         "category": "Egret",
         "title": "%egret.project.compile%"
@@ -371,6 +376,9 @@
         },
         {
           "command": "extension.egretServer"
+        },
+        {
+          "command": "extension.MyDebugWithoutBuild"
         }
       ],
       "editor/title": [

@@ -5,6 +5,7 @@ enum EgretConst {
 }
 
 enum EgretExtensionCommand {
+    MyDebugWithoutBuild = 'extension.MyDebugWithoutBuild',
     Build = 'extension.egretBuild',
     Run = 'extension.egretRun',
     Clean = 'extension.egretClean',

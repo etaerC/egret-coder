@@ -2,6 +2,8 @@ import { Command } from './command';
 import { Debug } from './debug/debug';
 import { EgretServer } from './debug/egretServer';
 import { onLauncherTask } from '../launcher/launcherHelper';
+import { addUri } from '../extension';
+import { parse, stringify, assign } from 'comment-json';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -21,6 +23,32 @@ export class Project {
 
     constructor() {
         this.debug = new Debug();
+    }
+
+    public async MyDebugWithoutBuild() {
+        let config;
+        const _uri = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        const uri = addUri(_uri, "\\.vscode\\launch.json", "/.vscode/launch.json");
+        if (fs.existsSync(uri)) {
+            let text = fs.readFileSync(uri, "utf-8");
+            const json = parse(text) as any;
+            for (let item of json.configurations) {
+                if (item.name == "Egret MyDebugWithoutBuild") {
+                    config = item;
+                }
+            }
+        } else {
+            console.log("file not exists");
+        }
+        if (!config) {
+            vscode.window.showInformationMessage("找不到启动配置，请在 launch.json 中添加 name=\"Egret MyDebugWithoutBuild\" 的启动配置。")
+            return;
+        };
+        if(config.preLaunchTask){
+            vscode.window.showInformationMessage("启动配置不符合规则：不应该有 preLaunchTask。")
+            return;
+        }
+        vscode.debug.startDebugging(vscode.workspace.workspaceFolders[0], config);
     }
 
     public async build() {

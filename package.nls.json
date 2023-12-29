@@ -31,6 +31,7 @@
 	"chrome.breakOnLoadStrategy.instrument.description": "Tell Chrome to pause as each script is loaded, resolving sourcemaps and setting breakpoints",
 	"chrome.breakOnLoadStrategy.regex.description": "Sets breakpoints optimistically in files with the same name as the file in which the breakpoint is set.",
 
+	"egret.project.MyDebugWithoutBuild": "Debug project, without compile（直接调试，不编译）",
 	"egret.project.compile": "Compile project",
 	"egret.project.clean": "Clean project",
 	"egret.project.run": "Run project",
