@@ -17,7 +17,7 @@ export class DebugFileServer {
     private getAvailablePort(): Promise<number> {
         return new Promise<number>((resolve, reject) => {
             const server = http.createServer();
-            server.listen(0);
+            server.listen(this.port);
             server.on('listening', () => {
                 this.port = server.address().port;
                 server.close();
@@ -51,7 +51,13 @@ export class DebugFileServer {
         return this._server;
     }
 
-    public async startServer(): Promise<void> {
+    public async startServer(cfg: vscode.DebugConfiguration): Promise<void> {
+        const url = cfg.url as string;
+        if (url) {
+            let ret = url.match(/:(\d+)/); // 比如 url = "http://localhost:8999"， 返回 ret = [":8999", "8999"]
+            if (ret && ret[1])
+                this.port = parseInt(ret[1]);
+        }
         return new Promise<void>( async (resolve, reject) => {
             if (this.serverRunning) {
                 resolve();

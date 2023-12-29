@@ -90,8 +90,8 @@ class DebugProvider {
     //    return await this.fileServer.getAvailablePort();
     // }
 
-    public async startServer(): Promise<void> {
-        return await this.fileServer.startServer();
+    public async startServer(cfg): Promise<void> {
+        return await this.fileServer.startServer(cfg);
     }
 
 }
@@ -122,7 +122,7 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
                 vscode.window.showInformationMessage("警告：跳过了 build")
             }
             // await DebugProvider.getInstance().getAvailablePort();
-            await DebugProvider.getInstance().startServer();
+            await DebugProvider.getInstance().startServer(config);
             console.log('获取端口号，并且开启服务器');
         }
         console.log('返回配置');
