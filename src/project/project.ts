@@ -33,21 +33,22 @@ export class Project {
             let text = fs.readFileSync(uri, "utf-8");
             const json = parse(text) as any;
             for (let item of json.configurations) {
-                if (item.name == "Egret MyDebugWithoutBuild") {
-                    config = item;
+                if (item.type == "Egret" && item.request == "launch") {
+                    config  = {};
+                    // 深拷贝：（除了 preLaunchTask） 
+                    for(let k in item){
+                        if(k != "preLaunchTask")
+                            config[k] = item[k];
+                    }
                 }
             }
         } else {
             console.log("file not exists");
         }
         if (!config) {
-            vscode.window.showInformationMessage("找不到启动配置，请在 launch.json 中添加 name=\"Egret MyDebugWithoutBuild\" 的启动配置。")
+            vscode.window.showInformationMessage("找不到启动配置，请在 launch.json 中添加 type=\"Egret\" request=\"launch\" 的启动配置。")
             return;
         };
-        if(config.preLaunchTask){
-            vscode.window.showInformationMessage("启动配置不符合规则：不应该有 preLaunchTask。")
-            return;
-        }
         vscode.debug.startDebugging(vscode.workspace.workspaceFolders[0], config);
     }
 
