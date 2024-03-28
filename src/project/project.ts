@@ -24,6 +24,41 @@ export class Project {
     constructor() {
         this.debug = new Debug();
     }
+    
+    public static MyDeleteFolder(dirPath: string, args?:{tips?}) { 
+        // 删除某个 文件夹，因为 NodeJs 不允许直接删除 “非空文件夹” ，所以遍历删除文件，再删除文件夹
+        // （ 真麻烦，不管了，先这样了。
+        // （ 参考：https://blog.csdn.net/forward_huan/article/details/108207673
+        try {
+            if(fs.existsSync(dirPath)){
+                if (fs.lstatSync(dirPath).isSymbolicLink()) {
+                    // 直接删除 “符号链接” ！
+                    fs.unlinkSync(dirPath);
+                } else {
+                    // 先递归删除其中的 每个文件：
+                    let files = fs.readdirSync(dirPath);
+                    for (const file of files) {
+                        var filePath = path.join(dirPath, file);
+                        if (fs.statSync(filePath).isFile()) {
+                            fs.unlinkSync(filePath);
+                        } else {
+                            this.MyDeleteFolder(filePath);
+                        }
+                    }
+                    // 再删除这个 空文件夹（此时文件夹为空，才能删除成功）
+                    fs.rmdirSync(dirPath);
+                }
+            }
+        } catch (error) {        
+            console.error(__filename, `Delete ${dirPath} error, ${error}`);
+            vscode.window.showInformationMessage(`删除文件夹错误： ${dirPath} , ${error}`);
+            return;
+        }
+        if(args && args.tips){
+            vscode.window.showInformationMessage("删除了文件夹:  " + dirPath);
+            console.log("删除了文件夹 : " + dirPath);
+        }
+    }
 
     public async MyDebugWithoutBuild() {
         let config;

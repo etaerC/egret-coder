@@ -5,6 +5,9 @@ import { EgretConst } from '../egret';
 import { tr } from '../i18n';
 import { EgretWebsite } from '../launcher/launcherDefines';
 import Launcher from '../launcher/launcher';
+import * as path from 'path';
+import * as fs from 'fs';
+import { Project } from './project';
 
 enum EgretCommand {
     Build = 'build',
@@ -26,7 +29,18 @@ export class Command {
     private static _channel: vscode.OutputChannel;
 
     public static async build(): Promise<void> {
-        await this.runCommand(EgretCommand.Build);
+        await this.runCommand(EgretCommand.Build, ()=>{
+            // -------------
+            // 编译完成后，删除多出的 scripts\plugins\node_modules\@egret 文件夹。 否则以后使用 EgretWing 打开时，编辑不了皮肤。
+            // （使用白鹭引擎 5.4.1 编译后，会有这种问题。—— 很可能 EgretWing 都过时，都不支持 5.4.1 了。
+            // （因为使用独立的 eui 软件编辑皮肤时，总是卡死。 —— 所以还是使用 EgretWing 编辑皮肤比较稳定。 
+            // -------------
+            let tegret = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, "scripts", "plugins", "node_modules", "@egret");
+            if (fs.existsSync(tegret)) {
+                Project.MyDeleteFolder(tegret, { tips: true });
+            }
+            // -------------
+        });
     }
 
     public static async clean(): Promise<void> {
@@ -37,12 +51,12 @@ export class Command {
         await this.runCommand(EgretCommand.Run);
     }
 
-    private static async runCommand(command: string): Promise<void> {
+    private static async runCommand(command: string, callback?: (error, stdout,stderr) => void): Promise<void> {
         try {
             const installed = await this.checkLauncherInstalled();
             if (!installed) { return; }
             const workspaceRoot = vscode.workspace.rootPath;
-            let status = cp.exec(`${this.EGRET_COMMAND} ${command}`, { cwd: workspaceRoot });
+            let status = cp.exec(`${this.EGRET_COMMAND} ${command}`, { cwd: workspaceRoot }, callback);
             status.stdout.on('data', (data) => {
                 this.showOutput(data);
             });
