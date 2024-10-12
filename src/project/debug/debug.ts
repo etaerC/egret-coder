@@ -116,10 +116,10 @@ export class ChromeConfigurationProvider implements vscode.DebugConfigurationPro
             // 生成可用端口号(该操作删除，合并到startServer函数中)
             // 启动静态文件服务器
             await DebugProvider.getInstance().setSourceMap();
-            if (config.preLaunchTask == "egret: build") {
-                await Command.build();
+            if(config.preLaunchTask == null) {
+                vscode.window.showInformationMessage(`跳过 build ，直接启动 ${config.url} `)
             } else {
-                vscode.window.showInformationMessage("警告：跳过了 build")
+                await Command.build();
             }
             // await DebugProvider.getInstance().getAvailablePort();
             await DebugProvider.getInstance().startServer(config);

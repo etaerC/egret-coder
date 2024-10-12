@@ -70,11 +70,9 @@ export class Project {
             for (let item of json.configurations) {
                 if (item.type == "Egret" && item.request == "launch") {
                     config  = {};
-                    // 深拷贝：（除了 preLaunchTask） 
-                    for(let k in item){
-                        if(k != "preLaunchTask")
-                            config[k] = item[k];
-                    }
+                    for(let k in item) // 深拷贝 
+                        config[k] = item[k];
+                    config.preLaunchTask = null; // 清除 preLaunchTask 避免触发编译
                 }
             }
         } else {
